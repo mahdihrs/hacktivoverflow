@@ -10,7 +10,7 @@ const indexRouter = require('./routes/index')
 const { send } = require('./helpers/nexmoReminder')
 const kue = require('kue')
 const queue = kue.createQueue()
-mongoose.connect('mongodb://localhost/hacktiv-overflow', { useNewUrlParser: true })
+mongoose.connect('mongodb+srv://mahdihrs:process.env.PASS_ATLAS@projects-a1wq0.gcp.mongodb.net/test?retryWrites=true', { useNewUrlParser: true })
 
 app.use(cors())
 app.use(express.urlencoded({ extended: false }))
