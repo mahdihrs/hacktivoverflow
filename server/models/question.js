@@ -26,6 +26,10 @@ const questionSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     },
+    tags: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Tag',
+    }],
     answers: [{
         type: Schema.Types.ObjectId,
         ref: 'Answer'

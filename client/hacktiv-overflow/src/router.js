@@ -29,8 +29,14 @@ export default new Router({
           path: '/login',
           name: 'login',
           component: () => import(/* webpackChunkName: "login form" */ './components/LoginForm.vue')
-        }
+        },    
       ]
+    },
+    {
+      path: '/tags',
+      name: 'tags',
+      component: () => import(/* webpackChunkName: "all tags" */ '@/views/Tags.vue')
+     
     },
     {
       path: '/questions',
@@ -61,7 +67,12 @@ export default new Router({
           path: 'answer/edit/:userId/:id',
           name: 'edit-answer-from-detail',
           component: () => import(/* webpackChunkName: "edit questions" */ '@/components/EditAnswerFromDetail.vue')
-        }        
+        },
+        {
+          path: 'search-by-tag/:id',
+          name: 'search-tag',
+          component: () => import(/* webpackChunkName: "edit questions" */ '@/components/TagSearch.vue')
+        },  
       ]
     },
     {

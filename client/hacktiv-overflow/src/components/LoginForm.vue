@@ -17,6 +17,7 @@
 
 <script>
 import axios from '@/api/server.js'
+import { mapState } from 'vuex'
 
 export default {
     data() {
@@ -25,6 +26,9 @@ export default {
             password: ''
         }
     },
+    computed: mapState([
+        "isLogin"
+    ]),
     methods: {
         login() {
             axios.post('/users/login', {
@@ -33,6 +37,7 @@ export default {
             })
             .then(({data}) => {
                 this.$store.commit('whosLogin', data.id)
+                this.$store.commit('isLoginQuestionMark', true)
                 localStorage.setItem('token', data.token)
                 localStorage.setItem('id', data.id)
                 swal({
@@ -43,7 +48,6 @@ export default {
                 this.$router.replace({
                     name: 'question'
                 })
-                //this.$router.replace biar gabisa diback
             })
             .catch(err => {
                 if (err.response.status == 404) {

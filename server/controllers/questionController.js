@@ -1,10 +1,11 @@
 const Question = require('../models/question')
+const Tag = require('../models/tag')
 
 class Controller {
     static getAllQuestions(req, res) {
         Question.find({}).populate('user').sort([
             ['created_at', 'descending']
-        ])
+        ]).populate('tags')
         .then(questions => {
             res
                 .status(200)
@@ -21,23 +22,97 @@ class Controller {
     }
 
     static createQuestion(req, res) {
-        console.log(req.decoded)
-        Question.create({
-            title: req.body.title,
-            description: req.body.description,
+        let promises = []
+        let readyToPutTag = [] //tag yang udah ada dan gaperlu di-create lagi
+        req.body.tags = req.body.tags.map(e => e.text)
+        req.body.tags.forEach(tag => {
+            promises.push(
+                Tag.findOne({
+                    name: tag
+                })
+            )
         })
-        .then(newQ => {
-            newQ.user = req.decoded.id
-            newQ.save()
+        Promise.all(promises)
+        .then(tags => {
+            readyToPutTag = tags.filter(e => e !== null)
+            readyToPutTag.forEach(tg => {
+                let index = req.body.tags.findIndex(e => e === tg.name)
+                req.body.tags.splice(index, 1)
+            })
+            readyToPutTag = readyToPutTag.map(e => e._id)
+            let tagToCreate = []
+            req.body.tags.forEach(tag => {
+                tagToCreate.push(
+                    Tag.create({
+                        name: tag
+                    })
+                )
+            })
+            return Promise.all(tagToCreate)
+        })
+        .then(createdTags => {
+            createdTags = createdTags.map(e => e._id).concat(readyToPutTag)
+            Question.create({
+                title: req.body.title,
+                description: req.body.description,
+                user: req.decoded.id,
+                tags: createdTags
+            })
+            .then(newQuestion => {
+                res
+                    .status(200)
+                    .json({
+                        msg: 'Question has been successfully stored'
+                    })                
+            })
+        })
+        .catch(err => {
+            console.log(err)
+            res
+                .status(500)
+                .json({
+                    msg: `internal server error`,
+                    err: err
+                })
+        })
+
+
+        // Question.create({
+        //     title: req.body.title,
+        //     description: req.body.description,
+        // })
+        // .then(newQ => {
+        //     newQ.user = req.decoded.id
+        //     newQ.save()
+        //     res
+        //         .status(200)
+        //         .json({msg: 'Question has been successfully stored'})
+        // })
+        // .catch(err => {
+        //     res
+        //         .status(500)
+        //         .json({
+        //             msg: `internal server error`,
+        //             err: err
+        //         })
+        // })
+    }
+
+    static searchByTag(req, res) {
+        console.log(req.params.tagId)
+        Question.find({
+            tags: req.params.tagId
+        })
+        .then(Qs => {
             res
                 .status(200)
-                .json({msg: 'Question has been successfully stored'})
+                .json(Qs)
         })
         .catch(err => {
             res
                 .status(500)
                 .json({
-                    msg: `internal server error`,
+                    msg: `Internal server error`,
                     err: err
                 })
         })
@@ -73,9 +148,6 @@ class Controller {
     //put
     //req body isinya up atau down
     static vote(req, res) {
-        // console.log(req.decoded)
-        // console.log(req.body)
-        // console.log(req.params)
         Question.findById(req.params.id)
         .then(q => {
             let findUserInUpvote = q.upvotes.find(e => e == req.decoded.id)

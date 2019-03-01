@@ -13,7 +13,7 @@
                 </div>
                 <hr>
                 <div>
-                    <h5>{{ certainQuestion.description }}</h5>
+                    <h5 v-html="certainQuestion.description"></h5>
                 </div>
                 <hr>
                 <div style="font-size: 0.8em;">
@@ -80,10 +80,6 @@ export default {
         Answers
     },
     methods: { 
-        // cekAdmin() {
-        //     console.log(this.certainQuestion)
-        //     console.log(localStorage.getItem('id'), 'userrr')
-        // },
         postAnswer() {
             this.$store.dispatch('postAnswer', {
                 questionId: this.id,
@@ -94,11 +90,12 @@ export default {
         vote(voteQuestionMark) {
             if (!localStorage.getItem('token')) {
                 swal("Unauthorized Access!", "Please login first", "error");
-            }
-            if (voteQuestionMark === 'up') {
-                this.$store.dispatch('upVotes', this.certainQuestion._id)
             } else {
-                this.$store.dispatch('downVotes', this.certainQuestion._id)
+                if (voteQuestionMark === 'up') {
+                    this.$store.dispatch('upVotes', this.certainQuestion._id)
+                } else {
+                    this.$store.dispatch('downVotes', this.certainQuestion._id)
+                }
             }
         },
         editQuestion() {

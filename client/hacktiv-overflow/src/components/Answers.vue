@@ -50,10 +50,14 @@ export default {
     ]),
     methods: {
         vote(direction, answerId) {
-            if (direction === 'up') {
-                this.$store.dispatch('upVotesAnswer', answerId)
+            if (!localStorage.getItem('token')) {
+                swal("Unauthorized Access!", "Please login first", "error");
             } else {
-                this.$store.dispatch('downVotesAnswer', answerId)
+                if (direction === 'up') {
+                    this.$store.dispatch('upVotesAnswer', answerId)
+                } else {
+                    this.$store.dispatch('downVotesAnswer', answerId)
+                }
             }
         },
         editAnswer() {

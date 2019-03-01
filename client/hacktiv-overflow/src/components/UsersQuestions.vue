@@ -11,11 +11,10 @@
                     <div class="col-10">
                         <div>
                             <h5>{{ q.title }}</h5>
-                            <!-- {{q._id}} -->
                         </div>
                         <hr>
                         <div>
-                            {{ q.description }}
+                            <h5 v-html="q.description"></h5>
                         </div>
                     </div>
                 </div>
@@ -34,7 +33,7 @@
                     </div>
                     <div class="col-10">
                         <div>
-                            <h5>{{ a.title }}</h5>
+                            <h5><a href="#" @click="toQuestion(a._id)">{{ a.title }}</a></h5>
                             <!-- {{a}} -->
                         </div>
                         <hr>
@@ -141,6 +140,30 @@ export default {
                     userId: localStorage.getItem('id'),
                     data: data,
                 }
+            })
+        },
+        toQuestion(id) {
+            // console.log(id)
+            axios({
+                url: `/answers/get-question/${id}`,
+                methods: 'get',
+                headers: {
+                    access_token: localStorage.getItem('token')
+                }
+            })
+            .then(({data}) => {
+                this.$store.dispatch('getAnswers', data._id)
+                this.$router.push({
+                    name: 'question-detail',
+                    path: `/q/:id`,
+                    params: {
+                        // title: data.title,
+                        id: data._id
+                    }
+                })
+            })
+            .catch(err => {
+                console.log(err)
             })
         }
     }

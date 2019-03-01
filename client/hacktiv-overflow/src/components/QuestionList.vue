@@ -5,19 +5,26 @@
         </div>
         <div class="card my-3 mx-3" v-for="q in this.allQuestions()" :key="q.id">
             <div class="card-body d-flex">
-                <div class="col-3 d-flex p-0">
-                    <div class="m-1">
-                        Votes <br>
-                        <strong>{{ q.upvotes.length - q.downvotes.length }}</strong>
+                <div class="d-flex flex-column">
+                    <div class="col-3 d-flex p-0">
+                        <div class="m-1">
+                            Votes <br>
+                            <strong>{{ q.upvotes.length - q.downvotes.length }}</strong>
+                        </div>
+                        <div class="m-1">
+                            Answers <br>
+                            <strong>{{q.answers.length}}</strong>
+                        </div>
                     </div>
-                    <div class="m-1">
-                        Answers <br>
-                        <strong>{{q.answers.length}}</strong>
+                    <div class="mt-3 justify-content-center">
+                        <h5 class="mt-1">Tags</h5>
+                        <div v-if="q.tags.length === 0">
+                            No Tag Included
+                        </div>
+                        <div v-else v-for="tag in q.tags" :key="tag.id">
+                            <a href="#" class="my-0" @click="searchTag(tag._id)">{{ tag.name }}</a>
+                        </div>
                     </div>
-                    <!-- <div class="m-1">
-                        Views <br>
-                        1 
-                    </div> -->
                 </div>
                 <div id="content" class="col-7">
                     <div id="title">
@@ -25,7 +32,7 @@
                     </div>
                     <hr>
                     <div id="content">
-                        {{ q.description }}
+                        <p v-html="q.description"></p>
                     </div>
                 </div>
                 <div class="ml-1" style="border-left: 1px solid black;text-align: left; font-size: 0.8em;">
@@ -45,7 +52,7 @@ import { mapState } from "vuex";
 export default {
     data() {
         return {
-
+            
         }
     },
     computed: mapState([
@@ -88,12 +95,9 @@ export default {
         toDetailQuestion(id) {
             axios.get(`/questions/${id}`)
             .then(({data}) => {
-                // console.log(data)
                 this.$router.push({
                     name: 'question-detail',
-                    // path: `/questions/`,
                     params: {
-                        // title: data.title,
                         id: data._id,
                         data: data
                     }
@@ -102,6 +106,16 @@ export default {
             .catch(err => {
                 console.log(err)
             })
+        },
+        searchTag(id) {
+            this.$router.push({
+                name: 'search-tag',
+                path: 'search-by-tag/:id',
+                params: {
+                    id: id
+                }
+            })
+            this.$emit('search-tag', id)
         }
     }    
 }

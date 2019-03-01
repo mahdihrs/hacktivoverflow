@@ -14,19 +14,26 @@ export default new Vuex.Store({
     totalVotes: 0,
     isAdmin: false,
     usersQuestions: [],
-    usersAnswer: []
+    usersAnswer: [],
+    questionsFoundByTag: [],
+    allTags: []
   },
   mutations: {
     editQuestion(state, payload) {
-      // console.log(state.certainQuestion)
       state.certainQuestion.title = payload.title
       state.certainQuestion.description = payload.description
+    },
+    getTags(state, payload) {
+      state.allTags = payload
     },
     isItAdmin(state, payload) {
       state.isAdmin = payload
     },
     whosLogin(state, payload) {
       state.userLogin = payload
+    },
+    setQsFoundByTag(state, payload) {
+      state.questionsFoundByTag = payload
     },
     getAllQs(state, payload) {
       state.allQuestions = payload
@@ -60,8 +67,6 @@ export default new Vuex.Store({
       state.totalVotes = payload
     },
     changeUpVotes(state, payload) {
-      // console.log(payload)
-      // console.log(payload.questionId)
       state.allQuestions.forEach(q => {
         if (q._id == payload.questionId) {
           if (payload.action === 'Push Upvotes') {
@@ -69,7 +74,6 @@ export default new Vuex.Store({
             state.certainQuestion.upvotes.push(state.userLogin)
           } else if (payload.action === 'Pull Upvotes') {
             let index = q.upvotes.findIndex(e => e == state.userLogin)
-            // console.log(index)
             q.upvotes.splice(index, 1)
             state.certainQuestion.upvotes.splice(index, 1)
           } else {
@@ -149,7 +153,6 @@ export default new Vuex.Store({
       })
     },
     postAnswer(context, newAnswer) {
-      // console.log(newAnswer)
       axios({
           method: 'post',
           url: '/answers',
@@ -195,7 +198,6 @@ export default new Vuex.Store({
       })
     },
     upVotes(context, questionId) {
-      // console.log(questionId)
       axios({
         url: `/questions/vote/${questionId}`,
         method: 'put',
@@ -303,6 +305,31 @@ export default new Vuex.Store({
         context.commit('putUserAnswers', data)
       })
       .then(err => {
+        console.log(err)
+      })
+    },
+    tagSearch(context, payload) {
+      axios({
+          url: `/questions/search-tag/${payload}`,
+          methods: 'get'
+      })
+      .then(({data}) => {
+          context.commit('setQsFoundByTag', data)
+      })
+      .catch(err => {
+          console.log(err)
+      })
+    },
+    getTags(context) {
+      axios({
+        url: '/tags',
+        methods: 'get'
+      })
+      .then(({data}) => {
+        console.log(data)
+        context.commit('getTags', data)
+      })
+      .catch(err => {
         console.log(err)
       })
     }

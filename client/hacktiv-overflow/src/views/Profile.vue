@@ -2,15 +2,15 @@
     <div>
         <NavbarHomepage />
         <div class="d-flex vh-100">
-            <div id="side-menu" class="col-2" style="border-right: 1px solid black; height: 100%; text-align: left; font-size: 1.5em;">
+            <div id="side-menu" class="col-2" style="border-right: 2px solid #087E8B; height: 100%; text-align: left; color: #087E8B; font-size: 1.5em;">
                 <div>
-                    <router-link to="/">Tags</router-link> 
+                    <router-link style="color: #087E8B;" to="/tags">Tags</router-link> 
                 </div>
                 <div>
-                    <router-link to="/questions">Questions</router-link>
+                    <router-link style="color: #087E8B;" to="/questions">Questions</router-link>
                 </div>
                 <div>
-                    <router-link to="/profile">Users</router-link>
+                    <router-link style="color: #087E8B;" to="/profile">Users</router-link>
                 </div>
             </div>
             <div class="col-8">

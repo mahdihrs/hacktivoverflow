@@ -120,6 +120,26 @@ class Controller {
         })
     }
 
+    static getQuestion(req, res) {
+        console.log(',mask')
+        Question.findOne({
+            answers: req.params.answerId
+        })
+        .then(question => {
+            res 
+                .status(200)
+                .json(question)
+        })
+        .catch(err => {
+            res
+                .status(500)
+                .json({
+                    msg: `Internal server error`,
+                    err: err
+                })
+        })
+    }
+
     static getUsersAnswers(req, res) {
         console.log(req.decoded.id)
         Answer.find({

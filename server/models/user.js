@@ -44,7 +44,11 @@ const userSchema = new Schema({
     created_at: {
         type: Date,
         default: new Date
-    }
+    },
+    // watchedTags: {
+    //     type: Schema.Types.ObjectId,
+    //     ref: 'Tag',
+    // }
 })
 
 userSchema.pre('save', function(next) {

@@ -3,10 +3,10 @@ const { generate, decode } = require('../helpers/jwt')
 const { decrypt } = require('../helpers/bcryptjs')
 const kue = require('kue')
 const queue = kue.createQueue()
-// const { send } = require('../helpers/nexmoReminder')
-
+ 
 class Controller {
     static register(req, res) {
+        // req.body.watchedTags = 
         User.create({
             full_name: req.body.full_name,
             email: req.body.email,

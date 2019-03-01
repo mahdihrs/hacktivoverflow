@@ -6,14 +6,24 @@
                 <!-- <label for="formGroupExampleInput">Example label</label> -->
                 <input id="title-input" type="text" class="form-control" placeholder="Question's Title" v-model="title">
             </div>
-            <div class="form-group">
-                <!-- <label for="formGroupExampleInput">Example label</label> -->
+            <vue-tags-input
+                v-model="tag"
+                :tags="tags"
+                @tags-changed="newTags => tags = newTags"
+                class="form-group vw-100"
+            />
+            <!-- <div class="form-group">
+                <label for="formGroupExampleInput">Example label</label>
                 <input id="title-input" type="text" class="form-control" placeholder="Tags" v-model="tags">
-            </div>
-            <div class="md-form amber-textarea active-amber-textarea">
+            </div> -->
+            <!-- <div class="md-form amber-textarea active-amber-textarea">
                 <i class="fas fa-pencil-alt prefix"></i>
-                <textarea type="text" id="form22" class="md-textarea form-control" rows="3" placeholder="Write question detail here ..." v-model="content"></textarea>
+                <textarea type="text" id="form22" class="md-textarea form-control" rows="3" placeholder="Write question detail here ..." height="500px" v-model="content"></textarea> -->
                 <!-- <label for="form22">Material textarea with colorful prefix on :focus state</label> -->
+            <!-- </div> -->
+            <div>
+                <!-- <wysiwyg v-model="content" /> -->
+                <wysiwyg v-model="myHTML" />
             </div>
             <div class="mt-2">
                 <button class="btn btn-success btn-md">Submit</button>
@@ -24,18 +34,22 @@
 
 <script>
 import axios from '@/api/server.js'
+import VueTagsInput from '@johmun/vue-tags-input'
 
 export default {
     data() {
         return {
             title: '',
             content: '',
-            tags: ''
+            tag: '',
+            tags: [],
+            myHTML: ''
         }
     },
-    // components: {
-    //     wysiwyg: vueWysiwyg.default.component
-    // },
+    components: {
+        // wysiwyg: vueWysiwyg.default.component,
+        VueTagsInput
+    },
     methods: {
         createQuestion() {
             if (!localStorage.getItem('token')) {
@@ -50,7 +64,7 @@ export default {
                     },
                     data: {
                         title: this.title,
-                        description: this.content,
+                        description: this.myHTML,
                         tags: this.tags
                     }
                 })
